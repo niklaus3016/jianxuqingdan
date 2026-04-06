@@ -43,15 +43,18 @@ jobs:
         ls -la dist
         cat capacitor.config.ts
     
-    - name: Create Android directory if it doesn't exist
+    - name: Create Android directory and structure
       run: |
         if [ ! -d "android" ]; then
           echo "Android directory does not exist, creating..."
           mkdir -p android
+          npx cap add android
         fi
+        # Create necessary directories
+        mkdir -p android/app/src/main/assets
     
     - name: Regenerate Gradle Wrapper
-      run: npx cap update android && cd android && gradle wrapper
+      run: cd android && gradle wrapper
     
     - name: Fix Gradle wrapper
       run: |
