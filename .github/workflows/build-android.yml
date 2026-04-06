@@ -1,0 +1,87 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build web app
+      run: npm run build
+    
+    - name: Sync web resources to Android
+      run: npx cap sync android
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'adopt'
+        java-version: '21'
+    
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Decode keystore
+      run: |
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > android/my-release-key.keystore
+    
+    - name: Extract fingerprints from keystore
+      run: |
+        echo "# 将 base64 编码的 keystore 还原为文件"
+        echo ""
+        echo "===== 证书指纹 ====="
+        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep -E "(MD5|SHA1|SHA256):"
+        echo "===================="
+        echo ""
+        echo "===== MD5 指纹 ====="
+        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep "MD5:" | sed 's/.*MD5: //'
+        echo "===================="
+        echo ""
+        echo "===== SHA1 指纹（小米应用商店用）====="
+        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep "SHA1:" | sed 's/.*SHA1: //'
+        echo "======================================"
+        echo ""
+        echo "===== 去掉冒号的 SHA1（直接复制）====="
+        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep "SHA1:" | sed 's/.*SHA1: //' | tr -d ':'
+        echo "======================================"
+        echo ""
+        echo "===== 公钥信息 ====="
+        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep -A 3 "Certificate fingerprints:"
+        echo "============================="
+    
+    - name: Make gradlew executable
+      run: chmod +x ./android/gradlew
+    
+    - name: Build Android APK
+      run: |
+        cd android
+        ./gradlew assembleDebug assembleRelease
+    
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+    
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
