@@ -12,25 +12,26 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.10.0'
-        cache: 'npm'
-    
-    - name: Check Node.js version
+    - name: Set up Node.js using nvm
       run: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm install 22
+        nvm use 22
         node --version
         npm --version
     
-    - name: Clean dependencies
+    - name: Clean dependencies and set up project
       run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm use 22
+        
         rm -rf node_modules
         rm -f package-lock.json
         rm -f package.json
-    
-    - name: Create simplified package.json
-      run: |
+        
         cat > package.json << 'EOF'
 {
   "name": "jianxuqingdan",
@@ -64,9 +65,7 @@ jobs:
   }
 }
 EOF
-    
-    - name: Create Tailwind CSS config files
-      run: |
+        
         cat > tailwind.config.js << 'EOF'
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -91,10 +90,18 @@ export default {
 EOF
     
     - name: Install dependencies
-      run: npm install
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm use 22
+        npm install
     
     - name: Build web app
-      run: npm run build
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm use 22
+        npm run build
     
     - name: Check build output
       run: |
@@ -103,7 +110,11 @@ EOF
         cat capacitor.config.ts
     
     - name: Sync web resources to Android
-      run: npx cap sync android
+      run: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm use 22
+        npx cap sync android
     
     - name: Set up JDK
       uses: actions/setup-java@v4
