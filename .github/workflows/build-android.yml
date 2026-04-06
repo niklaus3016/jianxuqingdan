@@ -52,6 +52,7 @@ jobs:
         fi
         # Create necessary directories
         mkdir -p android/app/src/main/assets
+        mkdir -p android/capacitor-cordova-android-plugins
     
     - name: Regenerate Gradle Wrapper
       run: cd android && gradle wrapper
