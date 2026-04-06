@@ -34,10 +34,6 @@ dist-ssr
 build/
 
 # Capacitor
-capacitor.config.ts
-
-# Android
-android/
 
 # iOS
 ios/
