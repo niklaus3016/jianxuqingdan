@@ -52,8 +52,18 @@ jobs:
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
     
-    - name: Make gradlew executable
-      run: chmod +x ./android/gradlew
+    - name: Fix Gradle wrapper
+      run: |
+        cd android
+        rm -rf gradle/wrapper
+        mkdir -p gradle/wrapper
+        curl -o gradle/wrapper/gradle-wrapper.jar https://services.gradle.org/distributions/gradle-8.4-wrapper.jar
+        echo "distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists" > gradle/wrapper/gradle-wrapper.properties
+        chmod +x gradlew
     
     - name: Build Android Debug APK
       run: |
