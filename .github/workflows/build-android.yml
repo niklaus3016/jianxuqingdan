@@ -46,6 +46,12 @@ jobs:
     - name: Sync web resources to Android
       run: |
         node --version
+        which node
+        echo "NODE_VERSION=$NODE_VERSION"
+        echo "PATH=$PATH"
+        npm ls -g node
+        npm ls -g @capacitor/cli
+        npx cap --version
         npx cap sync android
     
     - name: Set up JDK
