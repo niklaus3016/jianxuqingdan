@@ -43,6 +43,59 @@ jobs:
         ls -la dist
         cat capacitor.config.ts
     
+    - name: Create Android directory if it doesn't exist
+      run: |
+        if [ ! -d "android" ]; then
+          echo "Android directory does not exist, creating..."
+          mkdir -p android
+        fi
+    
+    - name: Fix Gradle wrapper
+      run: |
+        cd android
+        rm -rf gradle
+        mkdir -p gradle/wrapper
+        ls -la
+        ls -la gradle
+        ls -la gradle/wrapper
+        curl -v -o gradle/wrapper/gradle-wrapper.jar https://services.gradle.org/distributions/gradle-8.4-wrapper.jar
+        ls -la gradle/wrapper
+        file gradle/wrapper/gradle-wrapper.jar
+        echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+        echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+        echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
+        echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+        echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+        cat gradle/wrapper/gradle-wrapper.properties
+        # Create gradlew script if it doesn't exist
+        if [ ! -f "gradlew" ]; then
+          echo "Creating gradlew script..."
+          cat > gradlew << 'EOF'
+#!/usr/bin/env sh
+
+executable="$0"
+while [ -h "$executable" ]; do
+  dir="$(dirname "$executable")"
+  executable="$(readlink "$executable")"
+  [[ $executable != /* ]] && executable="$dir/$executable"
+done
+
+executable_dir="$(dirname "$executable")"
+cd "$executable_dir"
+
+if [ ! -x "$executable_dir/gradle/wrapper/gradle-wrapper.jar" ]; then
+  echo "Error: gradle-wrapper.jar not found or not executable"
+  exit 1
+fi
+
+java "-Dorg.gradle.appname=gradlew" -classpath "$executable_dir/gradle/wrapper/gradle-wrapper.jar" org.gradle.wrapper.GradleWrapperMain "$@"
+EOF
+          chmod +x gradlew
+        else
+          chmod +x gradlew
+        fi
+        ls -la gradlew
+    
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
@@ -51,36 +104,6 @@ jobs:
     
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
-    
-    - name: Fix Gradle wrapper
-      run: |
-        ls -la
-        if [ -d "android" ]; then
-          echo "Android directory exists"
-          cd android
-          ls -la
-          rm -rf gradle/wrapper
-          mkdir -p gradle/wrapper
-          ls -la gradle
-          ls -la gradle/wrapper
-          curl -v -o gradle/wrapper/gradle-wrapper.jar https://services.gradle.org/distributions/gradle-8.4-wrapper.jar
-          ls -la gradle/wrapper
-          file gradle/wrapper/gradle-wrapper.jar
-          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
-          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
-          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
-          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-          cat gradle/wrapper/gradle-wrapper.properties
-          if [ -f "gradlew" ]; then
-            chmod +x gradlew
-            ls -la gradlew
-          else
-            echo "gradlew file not found"
-          fi
-        else
-          echo "Android directory does not exist"
-        fi
     
     - name: Sync web resources to Android
       run: |
