@@ -29,6 +29,12 @@ jobs:
     - name: Build web app
       run: npm run build
     
+    - name: Check build output
+      run: |
+        ls -la
+        ls -la dist
+        cat capacitor.config.ts
+    
     - name: Sync web resources to Android
       run: npx cap sync android
     
