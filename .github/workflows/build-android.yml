@@ -54,16 +54,33 @@ jobs:
     
     - name: Fix Gradle wrapper
       run: |
-        cd android
-        rm -rf gradle/wrapper
-        mkdir -p gradle/wrapper
-        curl -o gradle/wrapper/gradle-wrapper.jar https://services.gradle.org/distributions/gradle-8.4-wrapper.jar
-        echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
-        echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-        echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
-        echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
-        echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-        chmod +x gradlew
+        ls -la
+        if [ -d "android" ]; then
+          echo "Android directory exists"
+          cd android
+          ls -la
+          rm -rf gradle/wrapper
+          mkdir -p gradle/wrapper
+          ls -la gradle
+          ls -la gradle/wrapper
+          curl -v -o gradle/wrapper/gradle-wrapper.jar https://services.gradle.org/distributions/gradle-8.4-wrapper.jar
+          ls -la gradle/wrapper
+          file gradle/wrapper/gradle-wrapper.jar
+          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          cat gradle/wrapper/gradle-wrapper.properties
+          if [ -f "gradlew" ]; then
+            chmod +x gradlew
+            ls -la gradlew
+          else
+            echo "gradlew file not found"
+          fi
+        else
+          echo "Android directory does not exist"
+        fi
     
     - name: Sync web resources to Android
       run: |
