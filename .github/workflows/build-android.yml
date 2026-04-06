@@ -18,6 +18,11 @@ jobs:
         node-version: '22.10.0'
         cache: 'npm'
     
+    - name: Check Node.js version
+      run: |
+        node --version
+        npm --version
+    
     - name: Clean dependencies
       run: |
         rm -rf node_modules
