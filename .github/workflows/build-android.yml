@@ -36,52 +36,17 @@ jobs:
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
     
-    - name: Decode keystore
-      run: |
-        echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > android/my-release-key.keystore
-    
-    - name: Extract fingerprints from keystore
-      run: |
-        echo "# 将 base64 编码的 keystore 还原为文件"
-        echo ""
-        echo "===== 证书指纹 ====="
-        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep -E "(MD5|SHA1|SHA256):"
-        echo "===================="
-        echo ""
-        echo "===== MD5 指纹 ====="
-        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep "MD5:" | sed 's/.*MD5: //'
-        echo "===================="
-        echo ""
-        echo "===== SHA1 指纹（小米应用商店用）====="
-        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep "SHA1:" | sed 's/.*SHA1: //'
-        echo "======================================"
-        echo ""
-        echo "===== 去掉冒号的 SHA1（直接复制）====="
-        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep "SHA1:" | sed 's/.*SHA1: //' | tr -d ':'
-        echo "======================================"
-        echo ""
-        echo "===== 公钥信息 ====="
-        keytool -list -v -keystore android/my-release-key.keystore -alias qingxujifen -storepass 123456 | grep -A 3 "Certificate fingerprints:"
-        echo "============================="
-    
     - name: Make gradlew executable
       run: chmod +x ./android/gradlew
     
-    - name: Build Android APK
+    - name: Build Android Debug APK
       run: |
         cd android
-        ./gradlew assembleDebug assembleRelease
+        ./gradlew assembleDebug
     
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
         path: android/app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 30
-    
-    - name: Upload Release APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-release
-        path: android/app/build/outputs/apk/release/app-release.apk
         retention-days: 30
