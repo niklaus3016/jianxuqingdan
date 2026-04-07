@@ -19,9 +19,9 @@ android {
     signingConfigs {
         release {
             storeFile file('release.keystore')
-            storePassword "$MYAPP_RELEASE_STORE_PASSWORD"
-            keyAlias "$MYAPP_RELEASE_KEY_ALIAS"
-            keyPassword "$MYAPP_RELEASE_KEY_PASSWORD"
+            storePassword project.hasProperty('MYAPP_RELEASE_STORE_PASSWORD') ? "$MYAPP_RELEASE_STORE_PASSWORD" : ""
+            keyAlias project.hasProperty('MYAPP_RELEASE_KEY_ALIAS') ? "$MYAPP_RELEASE_KEY_ALIAS" : ""
+            keyPassword project.hasProperty('MYAPP_RELEASE_KEY_PASSWORD') ? "$MYAPP_RELEASE_KEY_PASSWORD" : ""
         }
     }
     aaptOptions {
