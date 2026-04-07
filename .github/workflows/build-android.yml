@@ -58,6 +58,19 @@ jobs:
         echo "ext.cordova = [:]" >> android/capacitor-cordova-android-plugins/cordova.variables.gradle
         echo "cordova.variables = [:]" >> android/capacitor-cordova-android-plugins/cordova.variables.gradle
     
+    - name: Create release.keystore
+      run: |
+        cd android/app
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+    
+    - name: Create gradle.properties
+      run: |
+        cd android
+        echo "MYAPP_RELEASE_STORE_FILE=release.keystore" > gradle.properties
+        echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
+        echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
+        echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
+    
     - name: Regenerate Gradle Wrapper
       run: cd android && gradle wrapper
     
@@ -100,19 +113,6 @@ jobs:
         name: app-debug
         path: android/app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
-    
-    - name: Create release.keystore
-      run: |
-        cd android/app
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
-    
-    - name: Create gradle.properties
-      run: |
-        cd android
-        echo "MYAPP_RELEASE_STORE_FILE=release.keystore" > gradle.properties
-        echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
-        echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
-        echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
     
     - name: Build Android Release APK
       run: |
