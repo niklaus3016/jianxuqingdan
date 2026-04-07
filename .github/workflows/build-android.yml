@@ -61,18 +61,32 @@ jobs:
     - name: Create release.keystore
       run: |
         cd android/app
+        echo "Creating release.keystore file..."
+        ls -la
+        echo "KEYSTORE_BASE64 length: ${#KEYSTORE_BASE64}"
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+        ls -la
+        file release.keystore
     
     - name: Create gradle.properties
       run: |
         cd android
+        echo "Creating gradle.properties file..."
+        ls -la
         echo "MYAPP_RELEASE_STORE_FILE=release.keystore" > gradle.properties
         echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
         echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
         echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
+        cat gradle.properties
     
     - name: Regenerate Gradle Wrapper
-      run: cd android && gradle wrapper --stacktrace
+      run: |
+        cd android
+        echo "Regenerating Gradle Wrapper..."
+        ls -la
+        ls -la gradle
+        ls -la gradle/wrapper
+        gradle wrapper --stacktrace
     
     - name: Fix Gradle wrapper
       run: |
