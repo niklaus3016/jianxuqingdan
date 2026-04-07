@@ -48,20 +48,20 @@ jobs:
           exit 1
         fi
         # Remove existing keystore file if it exists
-        if [ -f "app/my-release-key.keystore" ]; then
+        if [ -f "app/release.keystore" ]; then
           echo "Removing existing keystore file"
-          rm -f app/my-release-key.keystore
+          rm -f app/release.keystore
         fi
         # Create keystore file from base64 encoded secret
         echo "Creating keystore file from GitHub Secrets"
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/my-release-key.keystore
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/release.keystore
         # List aliases in keystore
         echo "=== Listing aliases in keystore ==="
-        keytool -list -keystore app/my-release-key.keystore -storepass "${{ secrets.KEYSTORE_PASSWORD }}"
+        keytool -list -keystore app/release.keystore -storepass "${{ secrets.KEYSTORE_PASSWORD }}"
         # Check keystore file details
         echo "=== Keystore file details ==="
-        ls -la app/my-release-key.keystore
-        file app/my-release-key.keystore
+        ls -la app/release.keystore
+        file app/release.keystore
 
     - name: Extract SHA1 from keystore
       run: |
@@ -69,7 +69,7 @@ jobs:
         echo "Run # 将 base64 编码的 keystore 还原为文件"
         echo ""
         # Get full keytool output for debugging
-        full_output=$(keytool -list -v -keystore app/my-release-key.keystore -alias jianxuqingdan -storepass "${{ secrets.KEYSTORE_PASSWORD }}")
+        full_output=$(keytool -list -v -keystore app/release.keystore -alias jianxuqingdan -storepass "${{ secrets.KEYSTORE_PASSWORD }}")
         
         echo "===== MD5 指纹（证书MD5）====="
         # Extract MD5 fingerprint with colons using more reliable method
@@ -113,7 +113,7 @@ jobs:
         ./gradlew clean
         # 构建release APK
         echo "Building release APK"
-        ./gradlew assembleRelease --no-build-cache --no-daemon -Pandroid.injected.signing.store.file=my-release-key.keystore -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" -Pandroid.injected.signing.key.alias=jianxuqingdan -Pandroid.injected.signing.key.password="${{ secrets.KEYSTORE_PASSWORD }}"
+        ./gradlew assembleRelease --no-build-cache --no-daemon -Pandroid.injected.signing.store.file=release.keystore -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" -Pandroid.injected.signing.key.alias=jianxuqingdan -Pandroid.injected.signing.key.password="${{ secrets.KEYSTORE_PASSWORD }}"
         echo "=== Build completed, checking output ==="
         ls -la app/build/outputs/apk/release/
         file app/build/outputs/apk/release/app-release.apk 2>/dev/null || echo "APK file not found"
