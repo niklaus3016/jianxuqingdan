@@ -67,6 +67,16 @@ jobs:
         ls -la
         file release.keystore
     
+    - name: Remove problematic icon files
+      run: |
+        cd android/app/src/main/res
+        echo "Removing problematic icon files..."
+        # Remove all icon files from mipmap directories
+        find mipmap-* -name "ic_launcher*.png" -delete
+        find mipmap-* -name "ic_launcher*.xml" -delete
+        # Check if files were removed
+        ls -la mipmap-*/
+    
     - name: Update gradle.properties
       run: |
         cd android
