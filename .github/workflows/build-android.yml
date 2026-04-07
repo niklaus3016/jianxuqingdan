@@ -24,19 +24,28 @@ jobs:
     - name: Build web app
       run: npm run build
     
-    - name: Fix Gradle wrapper
+    - name: Setup Gradle Wrapper
       run: |
         cd android
-        echo "Fixing Gradle wrapper..."
-        # Remove existing gradle wrapper files if they exist
-        rm -rf gradle/wrapper
-        mkdir -p gradle/wrapper
-        # Create a simple gradle-wrapper.properties file
-        echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
-        echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-        echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
-        echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-        echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-all.zip" >> gradle/wrapper/gradle-wrapper.properties
+        echo "Setting up Gradle wrapper..."
+        # Check if gradle is available
+        if command -v gradle &> /dev/null; then
+          echo "Gradle is available, running gradle wrapper..."
+          gradle wrapper
+        else
+          echo "Gradle is not available, downloading gradle wrapper directly..."
+          # Remove existing gradle wrapper files if they exist
+          rm -rf gradle/wrapper
+          mkdir -p gradle/wrapper
+          # Download gradle wrapper jar
+          curl -o gradle/wrapper/gradle-wrapper.jar https://repo1.maven.org/maven2/org/gradle/wrapper/gradle-wrapper/6.8.3/gradle-wrapper-6.8.3.jar
+          # Create gradle-wrapper.properties file
+          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-6.8.3-all.zip" >> gradle/wrapper/gradle-wrapper.properties
+        fi
         # Make gradlew executable
         chmod +x gradlew
         # Verify the files
