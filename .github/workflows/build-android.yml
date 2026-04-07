@@ -67,15 +67,18 @@ jobs:
         ls -la
         file release.keystore
     
-    - name: Remove problematic icon files
+    - name: Remove problematic image files
       run: |
         cd android/app/src/main/res
-        echo "Removing problematic icon files..."
+        echo "Removing problematic image files..."
         # Remove all icon files from mipmap directories
         find mipmap-* -name "ic_launcher*.png" -delete
         find mipmap-* -name "ic_launcher*.xml" -delete
+        # Remove all splash files from drawable directories
+        find drawable* -name "splash.png" -delete
         # Check if files were removed
         ls -la mipmap-*/
+        ls -la drawable*/
     
     - name: Update gradle.properties
       run: |
