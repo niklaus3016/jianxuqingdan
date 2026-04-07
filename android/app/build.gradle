@@ -25,8 +25,8 @@ android {
         }
     }
     aaptOptions {
-        // Temporarily disable icon processing to fix build issue
-        ignoreAssetsPattern '!ic_launcher.png:!ic_launcher_foreground.png:!ic_launcher_round.png:!ic_launcher.xml:!ic_launcher_round.xml'
+        // Temporarily disable icon and splash screen processing to fix build issue
+        ignoreAssetsPattern '!ic_launcher.png:!ic_launcher_foreground.png:!ic_launcher_round.png:!ic_launcher.xml:!ic_launcher_round.xml:!splash.png'
     }
     buildTypes {
         release {
