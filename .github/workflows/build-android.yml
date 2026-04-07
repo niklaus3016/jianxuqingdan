@@ -69,7 +69,7 @@ jobs:
         echo "Run # 将 base64 编码的 keystore 还原为文件"
         echo ""
         # Get full keytool output for debugging
-        full_output=$(keytool -list -v -keystore app/my-release-key.keystore -alias yuexuxingzuo -storepass "${{ secrets.KEYSTORE_PASSWORD }}")
+        full_output=$(keytool -list -v -keystore app/my-release-key.keystore -alias jianxuqingdan -storepass "${{ secrets.KEYSTORE_PASSWORD }}")
         
         echo "===== MD5 指纹（证书MD5）====="
         # Extract MD5 fingerprint with colons using more reliable method
@@ -113,7 +113,7 @@ jobs:
         ./gradlew clean
         # 构建release APK
         echo "Building release APK"
-        ./gradlew assembleRelease --no-build-cache --no-daemon -Pandroid.injected.signing.store.file=my-release-key.keystore -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" -Pandroid.injected.signing.key.alias=yuexuxingzuo -Pandroid.injected.signing.key.password="${{ secrets.KEYSTORE_PASSWORD }}"
+        ./gradlew assembleRelease --no-build-cache --no-daemon -Pandroid.injected.signing.store.file=my-release-key.keystore -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" -Pandroid.injected.signing.key.alias=jianxuqingdan -Pandroid.injected.signing.key.password="${{ secrets.KEYSTORE_PASSWORD }}"
         echo "=== Build completed, checking output ==="
         ls -la app/build/outputs/apk/release/
         file app/build/outputs/apk/release/app-release.apk 2>/dev/null || echo "APK file not found"
