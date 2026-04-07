@@ -24,15 +24,15 @@ android {
             keyPassword "$MYAPP_RELEASE_KEY_PASSWORD"
         }
     }
+    aaptOptions {
+        // Temporarily disable icon processing to fix build issue
+        ignoreAssetsPattern '!ic_launcher.png:!ic_launcher_foreground.png:!ic_launcher_round.png:!ic_launcher.xml:!ic_launcher_round.xml'
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            // Temporarily disable icon processing to fix build issue
-            aaptOptions {
-                ignoreAssetsPattern '!ic_launcher.png:!ic_launcher_foreground.png:!ic_launcher_round.png'
-            }
         }
     }
 }
