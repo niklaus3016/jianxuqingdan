@@ -67,17 +67,34 @@ jobs:
         ls -la
         file release.keystore
     
-    - name: Create gradle.properties
+    - name: Update gradle.properties
       run: |
         cd android
-        echo "Creating gradle.properties file..."
+        echo "Updating gradle.properties file..."
         ls -la
-        echo "android.useAndroidX=true" > gradle.properties
-        echo "android.enableJetifier=true" >> gradle.properties
-        echo "MYAPP_RELEASE_STORE_FILE=release.keystore" >> gradle.properties
-        echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
-        echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
-        echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
+        # Check if gradle.properties exists
+        if [ -f "gradle.properties" ]; then
+          echo "gradle.properties exists, updating..."
+          # Add android.enableJetifier=true if not present
+          if ! grep -q "android.enableJetifier=true" gradle.properties; then
+            echo "android.enableJetifier=true" >> gradle.properties
+          fi
+          # Add signing configs if not present
+          if ! grep -q "MYAPP_RELEASE_STORE_FILE" gradle.properties; then
+            echo "MYAPP_RELEASE_STORE_FILE=release.keystore" >> gradle.properties
+            echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
+            echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
+            echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
+          fi
+        else
+          echo "gradle.properties does not exist, creating..."
+          echo "android.useAndroidX=true" > gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+          echo "MYAPP_RELEASE_STORE_FILE=release.keystore" >> gradle.properties
+          echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
+          echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
+          echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
+        fi
         cat gradle.properties
     
     - name: Regenerate Gradle Wrapper
