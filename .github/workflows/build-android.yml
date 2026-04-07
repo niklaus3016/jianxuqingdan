@@ -28,6 +28,9 @@ jobs:
       run: |
         cd android
         echo "Setting up Gradle wrapper..."
+        # Create necessary directories
+        mkdir -p capacitor-cordova-android-plugins
+        mkdir -p app/src/main/assets
         # Check if gradle is available
         if command -v gradle &> /dev/null; then
           echo "Gradle is available, running gradle wrapper..."
