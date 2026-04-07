@@ -138,6 +138,15 @@ jobs:
         echo "=== Debug: Full keytool output ==="
         echo "$full_output"
 
+    - name: Remove problematic splash images
+      run: |
+        cd android
+        echo "Removing problematic splash images..."
+        find app/src/main/res -name "splash.png" -type f -delete
+        ls -la app/src/main/res/drawable/ 2>/dev/null || echo "drawable directory not found"
+        ls -la app/src/main/res/drawable-land-mdpi/ 2>/dev/null || echo "drawable-land-mdpi directory not found"
+        ls -la app/src/main/res/drawable-port-mdpi/ 2>/dev/null || echo "drawable-port-mdpi directory not found"
+
     - name: Build Android Release APK
       run: |
         cd android
