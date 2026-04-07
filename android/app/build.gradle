@@ -29,6 +29,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            // Temporarily disable icon processing to fix build issue
+            aaptOptions {
+                ignoreAssetsPattern '!ic_launcher.png:!ic_launcher_foreground.png:!ic_launcher_round.png'
+            }
         }
     }
 }
