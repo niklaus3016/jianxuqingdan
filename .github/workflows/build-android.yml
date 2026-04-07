@@ -24,6 +24,25 @@ jobs:
     - name: Build web app
       run: npm run build
     
+    - name: Fix Gradle wrapper
+      run: |
+        cd android
+        echo "Fixing Gradle wrapper..."
+        # Remove existing gradle wrapper files if they exist
+        rm -rf gradle/wrapper
+        mkdir -p gradle/wrapper
+        # Create a simple gradle-wrapper.properties file
+        echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+        echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+        echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+        echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+        echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-all.zip" >> gradle/wrapper/gradle-wrapper.properties
+        # Make gradlew executable
+        chmod +x gradlew
+        # Verify the files
+        ls -la gradle/wrapper/
+        cat gradle/wrapper/gradle-wrapper.properties
+
     - name: Sync web resources to Android
       run: npx cap sync android
     
@@ -38,19 +57,6 @@ jobs:
     
     - name: Make gradlew executable
       run: chmod +x ./android/gradlew
-
-    - name: Fix Gradle wrapper
-      run: |
-        cd android
-        if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-          echo "gradle-wrapper.jar not found, downloading..."
-          mkdir -p gradle/wrapper
-          curl -O https://services.gradle.org/distributions/gradle-8.5-all.zip
-          unzip -q gradle-8.5-all.zip
-          cp gradle-8.5/lib/gradle-wrapper.jar gradle/wrapper/
-          rm -rf gradle-8.5 gradle-8.5-all.zip
-        fi
-        chmod +x gradlew
 
     - name: Create keystore file from GitHub Secrets
       run: |
