@@ -26,7 +26,7 @@ android {
     }
     aaptOptions {
         // Temporarily disable icon and splash screen processing to fix build issue
-        ignoreAssetsPattern '!ic_launcher.png:!ic_launcher_foreground.png:!ic_launcher_round.png:!ic_launcher.xml:!ic_launcher_round.xml:!splash.png'
+        ignoreAssetsPattern 'splash.png'
     }
     buildTypes {
         release {
