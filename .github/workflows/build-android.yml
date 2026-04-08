@@ -138,24 +138,14 @@ jobs:
         echo "=== Debug: Full keytool output ==="
         echo "$full_output"
 
-    - name: Remove problematic splash images and references
+    - name: Verify splash images
       run: |
         cd android
-        echo "Removing problematic splash images..."
-        find app/src/main/res -name "splash.png" -type f -delete
+        echo "Verifying splash images..."
         ls -la app/src/main/res/drawable/ 2>/dev/null || echo "drawable directory not found"
         ls -la app/src/main/res/drawable-land-mdpi/ 2>/dev/null || echo "drawable-land-mdpi directory not found"
         ls -la app/src/main/res/drawable-port-mdpi/ 2>/dev/null || echo "drawable-port-mdpi directory not found"
-        
-        echo "Removing splash references from values.xml..."
-        if [ -f "app/src/main/res/values/values.xml" ]; then
-          # Remove lines containing drawable/splash
-          sed -i '/drawable\/splash/d' app/src/main/res/values/values.xml
-          echo "Updated values.xml file"
-          cat app/src/main/res/values/values.xml | grep -A 5 -B 5 "splash" || echo "No splash references found"
-        else
-          echo "values.xml file not found"
-        fi
+        find app/src/main/res -name "splash.png" -type f | wc -l || echo "Cannot count splash.png files"
 
     - name: Build Android Release APK
       run: |
