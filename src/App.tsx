@@ -75,7 +75,7 @@ const PrivacyModal = ({ onAccept, onDecline, onOpenAgreement, onOpenPrivacy }: {
   onOpenAgreement: () => void, 
   onOpenPrivacy: () => void 
 }) => (
-  <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-120">
     <motion.div
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -129,7 +129,7 @@ const PrivacyModal = ({ onAccept, onDecline, onOpenAgreement, onOpenPrivacy }: {
 );
 
 const AgreementModal = ({ onClose, title, content }: { onClose: () => void, title: string, content: any }) => (
-  <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-110">
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-130">
     <motion.div
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -734,7 +734,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-110"
+            className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 z-140"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
