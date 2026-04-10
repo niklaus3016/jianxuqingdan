@@ -19,9 +19,9 @@ android {
     signingConfigs {
         release {
             storeFile file('app/release.keystore')
-            storePassword project.hasProperty('android.injected.signing.store.password') ? "$android.injected.signing.store.password" : ""
-            keyAlias project.hasProperty('android.injected.signing.key.alias') ? "$android.injected.signing.key.alias" : ""
-            keyPassword project.hasProperty('android.injected.signing.key.password') ? "$android.injected.signing.key.password" : ""
+            storePassword project.hasProperty('android.injected.signing.store.password') ? project.getProperty('android.injected.signing.store.password') : ""
+            keyAlias project.hasProperty('android.injected.signing.key.alias') ? project.getProperty('android.injected.signing.key.alias') : ""
+            keyPassword project.hasProperty('android.injected.signing.key.password') ? project.getProperty('android.injected.signing.key.password') : ""
         }
     }
     aaptOptions {
