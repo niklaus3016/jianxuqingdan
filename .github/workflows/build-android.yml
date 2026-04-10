@@ -166,9 +166,18 @@ jobs:
         # 检查APK签名
         echo "=== Checking APK signature ==="
         if command -v apksigner &> /dev/null; then
-          apksigner verify --verbose app/build/outputs/apk/release/app-release.apk 2>/dev/null || echo "Cannot verify APK signature"
+          echo "Running apksigner verify..."
+          apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
         else
           echo "apksigner not found, skipping signature verification"
+        fi
+        # 尝试使用 jarsigner 检查签名
+        echo "=== Checking APK signature with jarsigner ==="
+        if command -v jarsigner &> /dev/null; then
+          echo "Running jarsigner verify..."
+          jarsigner -verify -verbose app/build/outputs/apk/release/app-release.apk
+        else
+          echo "jarsigner not found, skipping signature verification"
         fi
         # 查看APK基本信息
         echo "=== Checking APK basic info ==="
