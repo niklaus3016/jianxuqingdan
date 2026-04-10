@@ -155,7 +155,10 @@ jobs:
         ./gradlew clean
         # 构建release APK
         echo "Building release APK"
-        ./gradlew assembleRelease --no-build-cache --no-daemon -Pandroid.injected.signing.store.file=release.keystore -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" -Pandroid.injected.signing.key.alias=jianxuqingdan -Pandroid.injected.signing.key.password="${{ secrets.KEYSTORE_PASSWORD }}"
+        echo "Keystore file path: $(pwd)/release.keystore"
+        echo "Keystore file exists: $(test -f release.keystore && echo "yes" || echo "no")"
+        echo "Keystore file size: $(stat -c '%s' release.keystore 2>/dev/null || echo "unknown")"
+        ./gradlew assembleRelease --no-build-cache --no-daemon -Pandroid.injected.signing.store.file=release.keystore -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" -Pandroid.injected.signing.key.alias=jianxuqingdan -Pandroid.injected.signing.key.password="${{ secrets.KEYSTORE_PASSWORD }}" --info
         echo "=== Build completed, checking output ==="
         ls -la app/build/outputs/apk/release/
         file app/build/outputs/apk/release/app-release.apk 2>/dev/null || echo "APK file not found"
