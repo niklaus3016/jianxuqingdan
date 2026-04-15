@@ -163,7 +163,7 @@ const PrivacyPolicyContent = () => (
     <p className="text-center text-slate-400 mb-6"><strong>生效日期</strong>：2026年04月06日</p>
 
     <div className="bg-linear-to-r from-indigo-500/10 to-indigo-500/5 p-6 rounded-lg border-l-4 border-indigo-500 mb-6">
-      <p className="text-slate-300">欢迎使用「简序清单」（以下简称"本应用"）。本应用由开发者独立开发并运营。我们深知个人信息对您的重要性，将严格遵守《中华人民共和国个人信息保护法》等相关法律法规，保护您的个人信息安全。</p>
+      <p className="text-slate-300">欢迎使用「简序清单」（以下简称"本应用"）。本应用由 光年跃迁（温州）科技有限公司 （以下简称"我们"）开发并运营。我们深知个人信息对您的重要性，将严格遵守《中华人民共和国个人信息保护法》等相关法律法规，保护您的个人信息安全。</p>
     </div>
 
     <p className="mb-6 text-slate-300">本隐私政策旨在说明我们如何收集、使用、存储和保护您在使用本应用过程中提供的个人信息，以及您对这些信息所享有的权利。请您在使用本应用前仔细阅读并充分理解本政策的全部内容，尤其是加粗的条款。如您对本政策有任何疑问、意见或建议，可通过本政策末尾提供的联系方式与我们联系。</p>
